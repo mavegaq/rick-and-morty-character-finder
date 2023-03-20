@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import '../assets/css/ResidentInfo.css';
 
 const ResidentInfo = ({ residentUrl }) => {
   const [residentData, setResidentData] = useState(null);
 
   useEffect(() => {
     const fetchResidentData = async () => {
-      const response = await fetch(residentUrl);
-      const data = await response.json();
-      setResidentData(data);
+      try {
+        const response = await axios.get(residentUrl);
+        setResidentData(response.data);
+      } catch (error) {
+        console.error('Error fetching resident data:', error);
+      }
     };
 
     fetchResidentData();

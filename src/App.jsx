@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import Location from './components/Location';
@@ -6,14 +6,11 @@ import ResidentList from './components/ResidentList';
 import Loader from './components/Loader';
 
 function App() {
-  const [locationId, setLocationId] = useState(getRandomLocationId());
+  const [locationId, setLocationId] = useState('');
   const [locationData, setLocationData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const residentsPerPage = 10;
-
-  useEffect(() => {
-    fetchLocationData(locationId);
-  }, [locationId]);
 
   function fetchLocationData(id) {
     axios
@@ -26,15 +23,21 @@ function App() {
       });
   }
 
-  function getRandomLocationId() {
-    return Math.floor(Math.random() * 126) + 1;
-  }
-
   function handleSearch(event) {
     event.preventDefault();
     const id = event.target.locationId.value;
     setLocationId(id);
     setCurrentPage(1);
+
+    setIsLoading(true);
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    fetchLocationData(id);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }
 
   const indexOfLastResident = currentPage * residentsPerPage;
@@ -53,22 +56,27 @@ function App() {
           placeholder="Location ID"
           min="1"
           max="126"
+          style={{ width: '200px' }}
+          value={locationId}
+          onChange={(e) => setLocationId(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
-      {locationData ? (
-        <>
-          <Location locationData={locationData} />
-          <ResidentList
-            residents={currentResidents}
-            residentsPerPage={residentsPerPage}
-            totalResidents={locationData.residents.length}
-            paginate={paginate}
-            currentPage={currentPage}
-          />
-        </>
-      ) : (
+      {isLoading ? (
         <Loader />
+      ) : (
+        locationData && (
+          <>
+            <Location locationData={locationData} />
+            <ResidentList
+              residents={currentResidents}
+              residentsPerPage={residentsPerPage}
+              totalResidents={locationData.residents.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
+          </>
+        )
       )}
     </div>
   );

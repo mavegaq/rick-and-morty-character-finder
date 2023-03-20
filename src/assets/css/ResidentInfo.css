@@ -1,0 +1,25 @@
+.resident-info {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 2px solid #8EFF8B;
+    padding: 20px;
+    border-radius: 10px;
+    width: 200px;
+    text-align: left;
+    margin-bottom: 16px;
+  }
+  
+  .resident-info img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 16px;
+  }
+  
+  .resident-info p {
+    margin: 0;
+    font-family: 'Fira Code', monospace;
+    font-weight: medium;
+    font-size: 20px;
+    color: #FBFBFB;
+  }
+  

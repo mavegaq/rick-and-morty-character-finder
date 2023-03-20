@@ -1,18 +1,33 @@
 .residentGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 16px;
-    margin-bottom: 16px;
-  }
-  
-  .residentGridItem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .residentGridItem img {
-    max-width: 100%;
-    height: auto;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+  margin-bottom: 16px;
+}
+
+.residentGridItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(142, 255, 139, 0.5);
+  border: 2px solid #8EFF8B;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.residentGridItem:hover {
+  background-color: #8EFF8B;
+}
+
+.residentGridItem img {
+  max-width: 100%;
+  height: auto;
+}
+
+.residentGridItem p {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  font-weight: medium;
+  font-size: 20px;
+  color: #000000;
+}
