@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 import Location from './components/Location';
@@ -6,11 +6,20 @@ import ResidentList from './components/ResidentList';
 import Loader from './components/Loader';
 
 function App() {
-  const [locationId, setLocationId] = useState('');
+  const [locationId, setLocationId] = useState(null);
+  const [inputValue, setInputValue] = useState('');
   const [locationData, setLocationData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const residentsPerPage = 10;
+
+  useEffect(() => {
+    if (locationId) {
+      fetchLocationData(locationId);
+    }
+  }, [locationId]);
+
+
+  useEffect(() => {
+    setInputValue(locationId);
+  }, [locationId]);
 
   function fetchLocationData(id) {
     axios
@@ -23,28 +32,24 @@ function App() {
       });
   }
 
-  function handleSearch(event) {
-    event.preventDefault();
-    const id = event.target.locationId.value;
-    setLocationId(id);
-    setCurrentPage(1);
-
-    setIsLoading(true);
-    const timeoutId = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    fetchLocationData(id);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
+  function getRandomLocationId() {
+    return Math.floor(Math.random() * 126) + 1;
   }
 
-  const indexOfLastResident = currentPage * residentsPerPage;
-  const indexOfFirstResident = indexOfLastResident - residentsPerPage;
-  const currentResidents = locationData?.residents.slice(indexOfFirstResident, indexOfLastResident);
+  function handleSearch(event) {
+    event.preventDefault();
+    const id = inputValue;
+    if (id) {
+      setLocationId(id);
+    }
+  }
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  useEffect(() => {
+    if (!locationId) {
+      const randomId = getRandomLocationId();
+      setLocationId(randomId);
+    }
+  }, [locationId]);
 
   return (
     <div className="app">
@@ -53,30 +58,21 @@ function App() {
         <input
           type="number"
           name="locationId"
+          value={inputValue}
           placeholder="Location ID"
           min="1"
           max="126"
-          style={{ width: '200px' }}
-          value={locationId}
-          onChange={(e) => setLocationId(e.target.value)}
+          onChange={(e) => setInputValue(e.target.value)}
         />
         <button type="submit">Search</button>
       </form>
-      {isLoading ? (
-        <Loader />
+      {locationData ? (
+        <>
+          <Location locationData={locationData} />
+          <ResidentList residents={locationData.residents} />
+        </>
       ) : (
-        locationData && (
-          <>
-            <Location locationData={locationData} />
-            <ResidentList
-              residents={currentResidents}
-              residentsPerPage={residentsPerPage}
-              totalResidents={locationData.residents.length}
-              paginate={paginate}
-              currentPage={currentPage}
-            />
-          </>
-        )
+        <Loader />
       )}
     </div>
   );

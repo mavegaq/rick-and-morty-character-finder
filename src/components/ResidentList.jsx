@@ -11,7 +11,7 @@ const ResidentList = ({ residents }) => {
     <div>
       <h2>Residents</h2>
       {residents.length === 0 ? (
-        <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No residents found for this location.</p>
+        <p className="noResidentsMessage">No residents found for this location.</p>
       ) : (
         <>
           <div className="residentGrid">
